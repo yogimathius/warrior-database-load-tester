@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom
 class WarriorDatabaseSimulation extends Simulation {
 
   val httpProtocol =
-    http.baseUrl("http://127.0.0.1:3000")
+    http.baseUrl("http://127.0.0.1:4000")
       .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
       .acceptLanguageHeader("en-US,en;q=0.5")
       .acceptEncodingHeader("gzip, deflate")
@@ -24,9 +24,9 @@ class WarriorDatabaseSimulation extends Simulation {
 
   val scn = scenario("Test URL scenario").exec(
     http("Warrior list").get("/warrior"),
-    pause(1),
+    pause(2),
     http("Single Warrior").get("/warrior/2"),
-    pause(1),
+    pause(2),
     http("Create warrior")
       .post("/warrior")
       .body(StringBody("""{"id": "1", "name": "Warrior 1", "dob": "1901-03-04", "fight_skills": ["Skill 2", "Skill 3"]}"""))
@@ -35,7 +35,7 @@ class WarriorDatabaseSimulation extends Simulation {
 
   {
     setUp(
-      scn.inject(rampUsersPerSec(3).to(12).during(120))
+      scn.inject(rampUsersPerSec(1).to(350).during(180))
     ).protocols(httpProtocol);
   }
 }
