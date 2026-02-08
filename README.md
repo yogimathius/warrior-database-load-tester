@@ -1,17 +1,35 @@
-Gatling plugin for Gradle - Scala demo project
-==============================================
+# Warrior Database Load Tester
 
-A simple showcase of a Gradle project using the Gatling plugin for Gradle. Refer to the plugin documentation
-[on the Gatling website](https://gatling.io/docs/current/extensions/gradle_plugin/) for usage.
+Scala + Gatling load-testing project for Warrior API stress scenarios.
 
-This project is written in Scala, others are available for [Java](https://github.com/gatling/gatling-gradle-plugin-demo-java)
-and [Kotlin](https://github.com/gatling/gatling-gradle-plugin-demo-kotlin).
+## Purpose
+- Exercise Warrior API endpoints under increasing traffic and mixed request patterns.
+- Surface latency/error behavior during create, lookup, and search-heavy workloads.
 
-It includes:
+## Current Implementation
+- Stack: Scala, Gradle, Gatling plugin (`io.gatling.gradle`).
+- Main simulation: `src/gatling/scala/warriordatabase/WarriorDatabaseSimulation.scala`
+- Scenario coverage includes:
+- `POST /warrior` creation flow (with follow-up lookup by `Location` header)
+- `GET /warrior?t=...` search flow
+- invalid search request handling (`GET /warrior` expecting `400`)
+- Payload/feed data files:
+- `src/gatling/resources/warriors-payloads.tsv`
+- `src/gatling/resources/search-terms.tsv`
 
-* Gradle Wrapper, so you don't need to install Gradle (a JDK must be installed and $JAVA_HOME configured)
-* minimal `build.gradle` leveraging Gradle wrapper
-* latest version of `io.gatling.gradle` plugin applied
-* sample [Simulation](https://gatling.io/docs/gatling/reference/current/general/concepts/#simulation) class,
-demonstrating sufficient Gatling functionality
-* proper source file layout
+## Target System Assumptions
+- Default simulation base URL is `http://127.0.0.1:4000`.
+- The API under test is expected to expose the Warrior routes above.
+
+## Running the Tests
+- Run Gatling simulation:
+- `./gradlew gatlingRun`
+
+## Current Status
+- This repository is a focused load-testing harness, not the backend implementation itself.
+- It is useful for repeatable traffic-pattern testing once the target API environment is available.
+
+## Next Steps
+- Add named simulation profiles (smoke, baseline, stress, spike).
+- Export standardized reports and keep historical run artifacts in `docs/benchmarks/`.
+- Parameterize base URL and credentials via environment variables for CI and staging use.
